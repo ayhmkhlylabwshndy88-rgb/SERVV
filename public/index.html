@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>منصة البث المباشر العربية</title>
+    <style>
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #4ade80 #1a1a2e;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a2e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4ade80;
+            border-radius: 10px;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+        }
+        
+        .glow-text {
+            text-shadow: 0 0 30px rgba(74, 222, 128, 0.3);
+        }
+        
+        .sports-btn {
+            background: linear-gradient(135deg, #1a472a, #2d8a4e);
+            border: 2px solid #4ade80;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .sports-btn:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 0 30px rgba(74, 222, 128, 0.3);
+        }
+        
+        .bein-btn {
+            background: linear-gradient(135deg, #8b0000, #cc0000);
+            border: 2px solid #ff0000;
+        }
+        .bein-btn:hover {
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.4);
+        }
+        
+        .beinmax-btn {
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+            border: 2px solid #8b5cf6;
+        }
+        .beinmax-btn:hover {
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
+        }
+        
+        .drama-btn {
+            background: linear-gradient(135deg, #d97706, #f59e0b);
+            border: 2px solid #fbbf24;
+            color: #1a1a2e;
+        }
+        .drama-btn:hover {
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.4);
+            transform: scale(1.05) translateY(-2px);
+        }
+        
+        .kids-btn {
+            background: linear-gradient(135deg, #ec4899, #f472b6);
+            border: 2px solid #f9a8d4;
+            color: white;
+        }
+        .kids-btn:hover {
+            box-shadow: 0 0 30px rgba(236, 72, 153, 0.4);
+            transform: scale(1.05) translateY(-2px);
+        }
+        
+        .refresh-btn {
+            background: linear-gradient(135deg, #14b8a6, #0d9488);
+            border: 2px solid #2dd4bf;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s;
+            padding: 10px 20px;
+            border-radius: 12px;
+        }
+        .refresh-btn:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 0 30px rgba(20, 184, 166, 0.4);
+        }
+        .refresh-btn:active {
+            transform: scale(0.95);
+        }
+        .refresh-btn.spinning i {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .category-btn {
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+        .category-btn:hover {
+            border-color: #4ade80;
+            transform: translateY(-2px);
+        }
+        .category-btn.active {
+            border-color: #4ade80;
+            background: rgba(74, 222, 128, 0.15);
+        }
+        
+        .mode-btn {
+            transition: all 0.3s;
+            padding: 10px 24px;
+            border-radius: 12px;
+            font-weight: bold;
+            border: 2px solid transparent;
+        }
+        .mode-btn.active {
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: #0a0a1a;
+            border-color: #4ade80;
+        }
+        .mode-btn:not(.active) {
+            background: rgba(55, 65, 81, 0.5);
+            color: #9ca3af;
+            border-color: #374151;
+        }
+        .mode-btn:not(.active):hover {
+            background: rgba(75, 85, 99, 0.7);
+            color: white;
+        }
+        
+        .search-box {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            transition: all 0.3s;
+        }
+        .search-box:focus {
+            border-color: #4ade80;
+            box-shadow: 0 0 30px rgba(74, 222, 128, 0.1);
+        }
+        
+        #channelSelect option {
+            padding: 10px 14px;
+            margin: 4px 0;
+            border-radius: 8px;
+            background: rgba(26, 26, 46, 0.8);
+        }
+        
+        .video-js {
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .video-js .vjs-big-play-button {
+            background: rgba(74, 222, 128, 0.8) !important;
+            border-radius: 50% !important;
+            border: 2px solid #4ade80 !important;
+        }
+        
+        .glass-card {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 12px;
+            color: white;
+            font-weight: bold;
+            z-index: 9999;
+            animation: slideIn 0.5s ease;
+            max-width: 350px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        @keyframes slideIn {
+            0% { transform: translateX(100%); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+        .toast-success { background: linear-gradient(135deg, #22c55e, #16a34a); }
+        .toast-error { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .toast-warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .toast-info { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+    </style>
+</head>
+<body class="p-2 md:p-5">
+
+    <!-- Header -->
+    <div class="text-center mb-6">
+        <h1 class="text-3xl md:text-5xl font-bold glow-text inline-block float-animation">
+            <i class="fas fa-futbol text-green-400 mr-3"></i>
+            منصة البث المباشر العربية
+            <i class="fas fa-trophy text-yellow-400 mr-3"></i>
+        </h1>
+        <p class="text-gray-400 text-sm mt-2">
+            <i class="fas fa-satellite-dish text-green-400"></i> قنوات رياضية 
+            <i class="fas fa-film text-yellow-400 mx-2"></i> مسلسلات عربية 
+            <i class="fas fa-child text-pink-400 mx-2"></i> قنوات أطفال
+        </p>
+        <div class="flex justify-center gap-2 mt-2 text-xs text-gray-500 flex-wrap">
+            <span class="px-2 py-1 bg-gray-800/30 rounded-full"><i class="fas fa-circle text-green-400 pulse-dot"></i> بث مباشر</span>
+            <span class="px-2 py-1 bg-gray-800/30 rounded-full"><i class="fas fa-check-circle text-green-400"></i> روابط شغالة</span>
+            <span class="px-2 py-1 bg-gray-800/30 rounded-full"><i class="fas fa-user text-blue-400"></i> تحديث لكل مستخدم</span>
+        </div>
+    </div>
+
+    <!-- Mode Buttons + Refresh Button -->
+    <div class="flex justify-center gap-3 mb-6 flex-wrap items-center">
+        <button onclick="setMode('channels')" id="modeChannels" class="mode-btn active">
+            <i class="fas fa-satellite-dish"></i> قنوات
+        </button>
+        <button onclick="setMode('drama')" id="modeDrama" class="mode-btn">
+            <i class="fas fa-film"></i> مسلسلات
+        </button>
+        <button onclick="setMode('kids')" id="modeKids" class="mode-btn">
+            <i class="fas fa-child"></i> أطفال
+        </button>
+        <button onclick="refreshAllLinks()" id="refreshBtn" class="refresh-btn">
+            <i class="fas fa-sync-alt"></i> تحديث الروابط
+        </button>
+    </div>
+
+    <!-- Sports Buttons -->
+    <div id="sportsButtons" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 mb-4">
+        <button onclick="loadSportsChannels('bein')" class="sports-btn bein-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-tv"></i> بي إن سبورت
+        </button>
+        <button onclick="loadSportsChannels('beinmax')" class="sports-btn beinmax-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-fire"></i> بي إن ماكس
+        </button>
+        <button onclick="loadSportsChannels('abudhabi')" class="sports-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-satellite"></i> أبوظبي الرياضية
+        </button>
+        <button onclick="loadSportsChannels('ssc')" class="sports-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-flag"></i> SSC السعودية
+        </button>
+        <button onclick="loadSportsChannels('alkass')" class="sports-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-star"></i> الكأس القطرية
+        </button>
+        <button onclick="loadSportsChannels('aljazeera')" class="sports-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-globe"></i> الجزيرة الرياضية
+        </button>
+        <button onclick="loadSportsChannels('arryadia')" class="sports-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-mountain"></i> الرابعة المغربية
+        </button>
+        <button onclick="loadSportsChannels('kuwait')" class="sports-btn p-2 rounded-lg text-xs md:text-sm" style="background: linear-gradient(135deg, #0066cc, #0088ff); border-color: #3399ff;">
+            <i class="fas fa-tv"></i> الكويت الرياضية
+        </button>
+        <button onclick="loadSportsChannels('oman')" class="sports-btn p-2 rounded-lg text-xs md:text-sm" style="background: linear-gradient(135deg, #006400, #008000); border-color: #00cc00;">
+            <i class="fas fa-tv"></i> عمان الرياضية
+        </button>
+        <button onclick="loadSportsChannels('bahrain')" class="sports-btn p-2 rounded-lg text-xs md:text-sm" style="background: linear-gradient(135deg, #8b0000, #cc0000); border-color: #ff3333;">
+            <i class="fas fa-tv"></i> البحرين الرياضية
+        </button>
+        <button onclick="loadSportsChannels('all')" class="sports-btn p-2 rounded-lg text-xs md:text-sm" style="background: linear-gradient(135deg, #1a1a2e, #2d2d44); border-color: #6b7280;">
+            <i class="fas fa-layer-group"></i> الكل
+        </button>
+    </div>
+
+    <!-- Drama Buttons -->
+    <div id="dramaButtons" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 mb-4" style="display:none;">
+        <button onclick="loadDrama('mbc')" class="drama-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-tv"></i> MBC دراما
+        </button>
+        <button onclick="loadDrama('art')" class="drama-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-tv"></i> ART دراما
+        </button>
+        <button onclick="loadDrama('dubai')" class="drama-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-tv"></i> دبي دراما
+        </button>
+        <button onclick="loadDrama('jo')" class="drama-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-flag"></i> الأردن
+        </button>
+        <button onclick="loadDrama('sy')" class="drama-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-flag"></i> سوريا
+        </button>
+        <button onclick="loadDrama('eg')" class="drama-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-flag"></i> مصر
+        </button>
+        <button onclick="loadDrama('sa')" class="drama-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-flag"></i> السعودية
+        </button>
+        <button onclick="loadDrama('ae')" class="drama-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-flag"></i> الإمارات
+        </button>
+        <button onclick="loadDrama('iq')" class="drama-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-flag"></i> العراق
+        </button>
+        <button onclick="loadDrama('kw')" class="drama-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-flag"></i> الكويت
+        </button>
+        <button onclick="loadDrama('lb')" class="drama-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-flag"></i> لبنان
+        </button>
+        <button onclick="loadDrama('ps')" class="drama-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-flag"></i> فلسطين
+        </button>
+        <button onclick="loadDrama('ma')" class="drama-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-flag"></i> المغرب
+        </button>
+        <button onclick="loadDrama('dz')" class="drama-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-flag"></i> الجزائر
+        </button>
+        <button onclick="loadDrama('tn')" class="drama-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-flag"></i> تونس
+        </button>
+        <button onclick="loadDrama('qa')" class="drama-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-flag"></i> قطر
+        </button>
+        <button onclick="loadDrama('om')" class="drama-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-flag"></i> عمان
+        </button>
+        <button onclick="loadDrama('bh')" class="drama-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-flag"></i> البحرين
+        </button>
+    </div>
+
+    <!-- Kids Buttons -->
+    <div id="kidsButtons" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 mb-4" style="display:none;">
+        <button onclick="loadKidsChannels('spacetoon')" class="kids-btn p-2 rounded-lg text-xs md:text-sm" style="background: linear-gradient(135deg, #f59e0b, #d97706); border-color: #fbbf24;">
+            <i class="fas fa-rocket"></i> سبيستون
+        </button>
+        <button onclick="loadKidsChannels('cartoon')" class="kids-btn p-2 rounded-lg text-xs md:text-sm">
+            <i class="fas fa-tv"></i> كرتون نتورك
+        </button>
+        <button onclick="loadKidsChannels('mbc3')" class="kids-btn p-2 rounded-lg text-xs md:text-sm" style="background: linear-gradient(135deg, #22c55e, #16a34a); border-color: #4ade80;">
+            <i class="fas fa-tv"></i> MBC3
+        </button>
+        <button onclick="loadKidsChannels('disney')" class="kids-btn p-2 rounded-lg text-xs md:text-sm" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); border-color: #60a5fa;">
+            <i class="fas fa-castle"></i> ديزني
+        </button>
+        <button onclick="loadKidsChannels('nick')" class="kids-btn p-2 rounded-lg text-xs md:text-sm" style="background: linear-gradient(135deg, #f97316, #ea580c); border-color: #fb923c;">
+            <i class="fas fa-bolt"></i> نكلوديون
+        </button>
+        <button onclick="loadKidsChannels('boomerang')" class="kids-btn p-2 rounded-lg text-xs md:text-sm" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); border-color: #a78bfa;">
+            <i class="fas fa-undo"></i> بوميرانغ
+        </button>
+        <button onclick="loadKidsChannels('educational')" class="kids-btn p-2 rounded-lg text-xs md:text-sm" style="background: linear-gradient(135deg, #10b981, #059669); border-color: #34d399;">
+            <i class="fas fa-graduation-cap"></i> تعليمي
+        </button>
+        <button onclick="loadKidsChannels('toyor')" class="kids-btn p-2 rounded-lg text-xs md:text-sm" style="background: linear-gradient(135deg, #14b8a6, #0d9488); border-color: #2dd4bf;">
+            <i class="fas fa-dove"></i> طيور الجنة
+        </button>
+        <button onclick="loadKidsChannels('smart_kids')" class="kids-btn p-2 rounded-lg text-xs md:text-sm" style="background: linear-gradient(135deg, #6366f1, #4f46e5); border-color: #818cf8;">
+            <i class="fas fa-sync-alt"></i> قائمة ذكية
+        </button>
+        <button onclick="loadKidsChannels('all')" class="kids-btn p-2 rounded-lg text-xs md:text-sm" style="background: linear-gradient(135deg, #1a1a2e, #2d2d44); border-color: #6b7280;">
+            <i class="fas fa-layer-group"></i> الكل
+        </button>
+    </div>
+
+    <!-- Countries -->
+    <div class="grid grid-cols-4 md:grid-cols-8 gap-2 mb-4" id="nav-container"></div>
+
+    <!-- Search -->
+    <div class="relative mb-4">
+        <input type="text" id="search" placeholder="🔍 بحث عن قناة، مسلسل، أو برنامج أطفال..." 
+               class="search-box w-full p-3 rounded-xl bg-gray-800/50 border border-gray-700 focus:ring-2 ring-green-500 focus:outline-none text-white">
+        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex flex-col lg:flex-row gap-4">
+        <div class="w-full lg:w-1/3">
+            <div class="glass-card rounded-xl p-2 border border-gray-700">
+                <div class="flex justify-between items-center mb-2 px-2">
+                    <span class="text-sm text-gray-400" id="listTitle"><i class="fas fa-list"></i> القنوات</span>
+                    <span class="text-xs text-green-400 px-2 py-1 rounded-full" id="channelCount">0</span>
+                </div>
+                <select id="channelSelect" size="12" class="w-full bg-transparent p-2 rounded border border-gray-700 h-80 lg:h-96 text-white">
+                    <option value="">اختر...</option>
+                </select>
+            </div>
+        </div>
+        <div class="w-full lg:w-2/3">
+            <div class="bg-black/30 rounded-xl overflow-hidden border border-gray-700">
+                <video id="my-video" class="video-js vjs-big-play-centered w-full aspect-video" controls></video>
+            </div>
+            <div id="currentChannelInfo" class="mt-3 text-center text-gray-400 text-sm p-2 glass-card rounded-xl">
+                <i class="fas fa-play-circle text-green-400"></i> اختر قناة أو مسلسل أو برنامج أطفال للمشاهدة
+            </div>
+            <div class="mt-2 text-center text-xs text-gray-600" id="refreshInfo">
+                <i class="fas fa-clock"></i> آخر تحديث: <span id="lastRefresh">الآن</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="mt-6 text-center text-gray-500 text-xs border-t border-gray-800 pt-4">
+        <p>جميع الحقوق محفوظة © 2026 | منصة البث المباشر العربية</p>
+        <p class="mt-1">
+            <i class="fas fa-check-circle text-green-400"></i> روابط شغالة 
+            <i class="fas fa-tv text-blue-400 mx-2"></i> جودة عالية 
+            <i class="fas fa-bolt text-yellow-400"></i> بث سريع
+            <i class="fas fa-user text-blue-400 mx-2"></i> تحديث لكل جهاز
+        </p>
+    </div>
+
+    <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
+    <script>
+        // ============ الإعدادات ============
+        let currentMode = 'channels';
+        let allItems = [];
+        let currentCountry = 'jo';
+        let player = null;
+        let cachedData = {
+            sports: null,
+            drama: null,
+            kids: null
+        };
+
+        const cats = { 
+            jo: '🇯🇴 الأردن', sa: '🇸🇦 السعودية', eg: '🇪🇬 مصر', ae: '🇦🇪 الإمارات', 
+            kw: '🇰🇼 الكويت', qa: '🇶🇦 قطر', bh: '🇧🇭 البحرين', om: '🇴🇲 عمان', 
+            lb: '🇱🇧 لبنان', sy: '🇸🇾 سوريا', iq: '🇮🇶 العراق', ma: '🇲🇦 المغرب', 
+            dz: '🇩🇿 الجزائر', tn: '🇹🇳 تونس', ps: '🇵🇸 فلسطين'
+        };
+
+        const nav = document.getElementById('nav-container');
+
+        Object.entries(cats).forEach(([code, name]) => {
+            const btn = document.createElement('button');
+            btn.onclick = () => {
+                currentCountry = code;
+                loadContent(code);
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            };
+            btn.className = 'category-btn bg-gray-800 hover:bg-gray-700 p-2 text-xs md:text-sm rounded transition';
+            btn.innerHTML = name;
+            nav.appendChild(btn);
+        });
+
+        // ============ دالة عرض الإشعارات ============
+        function showToast(message, type = 'success') {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                toast.style.transition = 'all 0.5s ease';
+                setTimeout(() => toast.remove(), 500);
+            }, 4000);
+        }
+
+        // ============ تحديث الروابط لكل مستخدم ============
+        async function refreshAllLinks() {
+            const btn = document.getElementById('refreshBtn');
+            btn.classList.add('spinning');
+            btn.disabled = true;
+            
+            try {
+                showToast('🔄 جاري تحديث الروابط...', 'info');
+                
+                // جلب جميع البيانات من السيرفر
+                const response = await fetch('/api/refresh/all');
+                const result = await response.json();
+                
+                if (result.success) {
+                    // تخزين البيانات في Local Storage (خاصة بالمستخدم)
+                    localStorage.setItem('cachedSports', JSON.stringify(result.data.sports));
+                    localStorage.setItem('cachedDrama', JSON.stringify(result.data.drama));
+                    localStorage.setItem('cachedKids', JSON.stringify(result.data.kids));
+                    localStorage.setItem('lastRefresh', new Date().toISOString());
+                    
+                    // تحديث الكاش في الذاكرة
+                    cachedData.sports = result.data.sports;
+                    cachedData.drama = result.data.drama;
+                    cachedData.kids = result.data.kids;
+                    
+                    // تحديث الواجهة حسب الوضع الحالي
+                    if (currentMode === 'channels') {
+                        loadContent(currentCountry);
+                    } else if (currentMode === 'drama') {
+                        loadDrama('mbc');
+                    } else if (currentMode === 'kids') {
+                        loadKidsChannels('cartoon');
+                    }
+                    
+                    document.getElementById('lastRefresh').textContent = new Date().toLocaleTimeString();
+                    showToast(`✅ تم تحديث ${result.count} رابط بنجاح!`, 'success');
+                } else {
+                    showToast('❌ فشل تحديث الروابط', 'error');
+                }
+            } catch (error) {
+                console.error('Refresh error:', error);
+                showToast('❌ حدث خطأ أثناء التحديث', 'error');
+            } finally {
+                btn.classList.remove('spinning');
+                btn.disabled = false;
+            }
+        }
+
+        // ============ تحميل البيانات من الكاش أو من السيرفر ============
+        function getCachedData(type) {
+            const cached = localStorage.getItem(`cached${type.charAt(0).toUpperCase() + type.slice(1)}`);
+            if (cached) {
+                try {
+                    return JSON.parse(cached);
+                } catch (e) {
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        // ============ تبديل الوضع ============
+        function setMode(mode) {
+            currentMode = mode;
+            
+            document.getElementById('modeChannels').className = `mode-btn ${mode === 'channels' ? 'active' : ''}`;
+            document.getElementById('modeDrama').className = `mode-btn ${mode === 'drama' ? 'active' : ''}`;
+            document.getElementById('modeKids').className = `mode-btn ${mode === 'kids' ? 'active' : ''}`;
+            
+            document.getElementById('sportsButtons').style.display = mode === 'channels' ? 'grid' : 'none';
+            document.getElementById('dramaButtons').style.display = mode === 'drama' ? 'grid' : 'none';
+            document.getElementById('kidsButtons').style.display = mode === 'kids' ? 'grid' : 'none';
+            
+            const title = document.getElementById('listTitle');
+            if (mode === 'channels') {
+                title.innerHTML = '<i class="fas fa-satellite-dish"></i> القنوات';
+            } else if (mode === 'drama') {
+                title.innerHTML = '<i class="fas fa-film"></i> المسلسلات';
+            } else {
+                title.innerHTML = '<i class="fas fa-child"></i> قنوات الأطفال';
+            }
+            
+            if (mode === 'drama') {
+                loadDrama('mbc');
+            } else if (mode === 'kids') {
+                loadKidsChannels('cartoon');
+            } else {
+                loadContent(currentCountry);
+            }
+        }
+
+        // ============ تحميل المسلسلات ============
+        async function loadDrama(type) {
+            try {
+                // محاولة استخدام الكاش أولاً
+                const cached = getCachedData('drama');
+                if (cached && cached.length > 0) {
+                    const filtered = cached.filter(item => 
+                        item.name.toLowerCase().includes(type)
+                    );
+                    if (filtered.length > 0) {
+                        allItems = filtered;
+                        renderSelect(allItems);
+                        updateCount(allItems.length);
+                        showToast(`✅ تم تحميل ${filtered.length} مسلسل من الكاش`, 'success');
+                        return;
+                    }
+                }
+                
+                // إذا لم يوجد كاش، جلب من السيرفر
+                const res = await fetch(`/api/drama/${type}`);
+                const data = await res.json();
+                if (data && data.length > 0) {
+                    allItems = data;
+                    renderSelect(allItems);
+                    updateCount(allItems.length);
+                    showToast(`✅ تم تحميل ${data.length} مسلسل`, 'success');
+                } else {
+                    showToast('⚠️ لا توجد مسلسلات متاحة', 'warning');
+                }
+            } catch (error) {
+                showToast('❌ حدث خطأ', 'error');
+                console.error(error);
+            }
+        }
+
+        // ============ تحميل قنوات الأطفال ============
+        function loadKidsChannels(type) {
+            if (type === 'all') {
+                // استخدام الكاش أولاً
+                const cached = getCachedData('kids');
+                if (cached && cached.length > 0) {
+                    allItems = cached;
+                    renderSelect(allItems);
+                    updateCount(allItems.length);
+                    showToast(`✅ تم تحميل ${cached.length} قناة أطفال من الكاش`, 'success');
+                    return;
+                }
+                
+                fetch('/api/kids/all')
+                    .then(res => res.json())
+                    .then(data => {
+                        allItems = data;
+                        renderSelect(allItems);
+                        updateCount(allItems.length);
+                        showToast(`✅ تم تحميل ${data.length} قناة أطفال`, 'success');
+                    });
+                return;
+            }
+            
+            // استخدام الكاش أولاً
+            const cached = getCachedData('kids');
+            if (cached && cached.length > 0) {
+                const filtered = cached.filter(item => 
+                    item.name.toLowerCase().includes(type) || 
+                    type === 'cartoon' && item.name.toLowerCase().includes('كرتون') ||
+                    type === 'spacetoon' && item.name.toLowerCase().includes('سبيستون') ||
+                    type === 'disney' && item.name.toLowerCase().includes('ديزني')
+                );
+                if (filtered.length > 0) {
+                    allItems = filtered;
+                    renderSelect(allItems);
+                    updateCount(allItems.length);
+                    showToast(`✅ تم تحميل ${filtered.length} قناة أطفال من الكاش`, 'success');
+                    return;
+                }
+            }
+            
+            fetch(`/api/kids/${type}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        allItems = data;
+                        renderSelect(allItems);
+                        updateCount(allItems.length);
+                        showToast(`✅ تم تحميل ${data.length} قناة أطفال`, 'success');
+                    } else {
+                        showToast('⚠️ لا توجد قنوات أطفال', 'warning');
+                    }
+                })
+                .catch(err => {
+                    showToast('❌ حدث خطأ', 'error');
+                    console.error(err);
+                });
+        }
+
+        // ============ تحميل المحتوى ============
+        async function loadContent(code) {
+            try {
+                // استخدام الكاش أولاً
+                const cached = getCachedData('sports');
+                if (cached && cached.length > 0) {
+                    const filtered = cached.filter(item => 
+                        item.category === code || 
+                        item.name.toLowerCase().includes(cats[code]?.toLowerCase() || '')
+                    );
+                    if (filtered.length > 0) {
+                        allItems = filtered;
+                        renderSelect(allItems);
+                        updateCount(allItems.length);
+                        return;
+                    }
+                }
+                
+                const res = await fetch(`/api/channels/${code}`);
+                const data = await res.json();
+                if (data && data.length > 0) {
+                    allItems = data;
+                    renderSelect(allItems);
+                    updateCount(allItems.length);
+                } else {
+                    showToast('⚠️ لا توجد قنوات لهذه الدولة', 'warning');
+                    renderSelect([]);
+                    updateCount(0);
+                }
+            } catch (error) {
+                showToast('❌ حدث خطأ في التحميل', 'error');
+                console.error(error);
+            }
+        }
+
+        // ============ تحميل القنوات الرياضية ============
+        async function loadSportsChannels(type) {
+            if (currentMode !== 'channels') {
+                setMode('channels');
+            }
+            
+            try {
+                // استخدام الكاش أولاً
+                const cached = getCachedData('sports');
+                if (cached && cached.length > 0) {
+                    if (type === 'all') {
+                        allItems = cached;
+                        renderSelect(allItems);
+                        updateCount(allItems.length);
+                        showToast(`✅ تم تحميل ${allItems.length} قناة رياضية من الكاش`, 'success');
+                        return;
+                    }
+                    
+                    const filtered = cached.filter(item => 
+                        item.name.toLowerCase().includes(type) ||
+                        (type === 'bein' && item.name.toLowerCase().includes('bein')) ||
+                        (type === 'ssc' && item.name.toLowerCase().includes('ssc')) ||
+                        (type === 'alkass' && item.name.toLowerCase().includes('الكأس'))
+                    );
+                    
+                    if (filtered.length > 0) {
+                        allItems = filtered;
+                        renderSelect(allItems);
+                        updateCount(allItems.length);
+                        showToast(`✅ تم تحميل ${filtered.length} قناة من الكاش`, 'success');
+                        return;
+                    }
+                }
+                
+                if (type === 'all') {
+                    const res = await fetch('/api/sports/all');
+                    const data = await res.json();
+                    if (data && data.length > 0) {
+                        allItems = data;
+                        renderSelect(allItems);
+                        updateCount(allItems.length);
+                        showToast(`✅ تم تحميل ${allItems.length} قناة رياضية`, 'success');
+                    }
+                    return;
+                }
+                
+                const res = await fetch(`/api/sports/${type}`);
+                const data = await res.json();
+                if (data && data.length > 0) {
+                    allItems = data;
+                    renderSelect(allItems);
+                    updateCount(allItems.length);
+                    showToast(`✅ تم تحميل ${data.length} قناة`, 'success');
+                } else {
+                    showToast('⚠️ لا توجد قنوات متاحة', 'warning');
+                }
+            } catch (error) {
+                showToast('❌ حدث خطأ', 'error');
+                console.error(error);
+            }
+        }
+
+        // ============ عرض القائمة ============
+        function renderSelect(data) {
+            const select = document.getElementById('channelSelect');
+            select.innerHTML = '';
+            if (!data || data.length === 0) {
+                select.innerHTML = '<option value="">لا يوجد محتوى</option>';
+                return;
+            }
+            data.forEach(item => {
+                let opt = document.createElement('option');
+                opt.value = item.url || item.link || item.stream || '';
+                let name = item.name || item.title || 'غير معروف';
+                if (currentMode === 'drama') {
+                    name = '🎭 ' + name;
+                } else if (currentMode === 'kids') {
+                    name = '🧒 ' + name;
+                }
+                opt.textContent = name;
+                if (opt.value) {
+                    select.appendChild(opt);
+                }
+            });
+        }
+
+        // ============ تحديث العدد ============
+        function updateCount(count) {
+            const labels = {
+                channels: 'قناة',
+                drama: 'مسلسل',
+                kids: 'قناة أطفال'
+            };
+            const label = labels[currentMode] || 'قناة';
+            document.getElementById('channelCount').textContent = `${count} ${label}`;
+        }
+
+        // ============ تشغيل القناة/المسلسل ============
+        document.getElementById('channelSelect').onchange = (e) => {
+            const url = e.target.value;
+            if (!url || url === '') return;
+            
+            if (!player) {
+                player = videojs('my-video');
+            }
+            
+            try {
+                player.src({ src: url, type: 'application/x-mpegURL' });
+                player.load();
+                player.play().catch(err => {
+                    console.log('Auto-play prevented:', err);
+                });
+                
+                const selectedText = e.target.options[e.target.selectedIndex].text;
+                const types = {
+                    channels: '📺 قناة',
+                    drama: '🎬 مسلسل',
+                    kids: '🧒 برنامج أطفال'
+                };
+                const type = types[currentMode] || '📺';
+                document.getElementById('currentChannelInfo').innerHTML = 
+                    `<i class="fas fa-play-circle text-green-400"></i> جاري البث: <span class="text-green-400 font-bold">${selectedText}</span>`;
+            } catch (error) {
+                showToast('❌ لا يمكن تشغيل هذا المحتوى', 'error');
+                console.error(error);
+            }
+        };
+
+        // ============ البحث ============
+        document.getElementById('search').oninput = (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            if (!query) {
+                renderSelect(allItems);
+                updateCount(allItems.length);
+                return;
+            }
+            const filtered = allItems.filter(item => 
+                (item.name || item.title || '').toLowerCase().includes(query)
+            );
+            renderSelect(filtered);
+            updateCount(filtered.length);
+        };
+
+        // ============ التحميل الافتراضي ============
+        window.onload = () => {
+            player = videojs('my-video', {
+                controls: true,
+                autoplay: false,
+                fluid: true,
+                html5: {
+                    hls: {
+                        enableLowInitialPlaylist: true,
+                        smoothQualityChange: true
+                    }
+                }
+            });
+            
+            // التحقق من وجود كاش مسبق
+            const lastRefresh = localStorage.getItem('lastRefresh');
+            if (lastRefresh) {
+                document.getElementById('lastRefresh').textContent = new Date(lastRefresh).toLocaleTimeString();
+            }
+            
+            // تحميل المحتوى الافتراضي
+            loadContent('jo');
+        };
+    </script>
+</body>
+</html>
